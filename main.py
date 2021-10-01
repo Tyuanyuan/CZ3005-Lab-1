@@ -1,10 +1,12 @@
 import json
 import math
 from collections import defaultdict
+from queue import PriorityQueue
 
 start = "1"
 end = "50"
 max_energy = 287932
+num_vertices = 264346
 
 #***START OF DATA MERGING***
 
@@ -74,6 +76,80 @@ for i in Dist:
 #example: graph.weights["1", "2"] = 803
 #example: graph.h["1"] = 126981.59164619098
 #example: graph.costs["1", "2"] = 2008
+
+
+#***START OF DIJKSTRA'S (BFS) ALGORITHM***
+def findpath(parent, shortestdist, totalenergy):
+    path = [end]
+    while path[-1] != start:
+        path.append(parent[path[-1]])
+    path.reverse()
+    print("Shortest path: ", end="")
+    for node in path:
+        if (node!=end):
+            print(node,end="->")
+        else:
+            print(node)
+    print("Shortest distance: ", shortestdist)
+    print("Total energy cost: ", totalenergy)
+    return
+
+def dijkstra():
+    #Initialization
+    shortestpath = {n:float('inf') for n in range(num_vertices)} #stores the shortest distance from start to all the other nodes, initialized to infinity
+    shortestpath[int(start)] = 0
+
+    visited = [] #list of visited nodes
+    visited.append(start)
+
+    parent = {} #stores the parent node of the node
+    parent[start] = start
+
+    pqueue = PriorityQueue() #initialize a priority queue
+    pqueue.put((0, start))
+
+    energy = {} #energy stores the accumulated energy cost of the node
+    energy[start] = 0 #set the energy cost of start node to 0
+
+    #Create a loop to visit each node
+    while not pqueue.empty():         
+        currnode = ""  #store current node
+        (p,currnode) = pqueue.get()
+
+        #Check that there is a node at the front of the queue
+        if currnode == "":
+            print("Invalid path")
+            return
+        
+        #Add node neighbours to the queue
+        for neighbour in graph.edges[currnode]:
+            if neighbour not in visited:
+                energy[neighbour] = energy[currnode] + graph.costs[neighbour, currnode]
+                parent[neighbour] = currnode
+
+                #If visiting the node exceeds the energy budget, skip it
+                if energy[neighbour] > max_energy:
+                    continue
+
+                visited.append(neighbour)
+
+                #Prioritise the node with the shortest distance from start
+                old_cost = shortestpath[int(neighbour)]
+                new_cost = shortestpath[int(currnode)] + Dist[neighbour +","+ currnode]
+                if new_cost < old_cost:
+                    pqueue.put((new_cost, neighbour)) #prioritise the node with the shortest path
+                    shortestpath[int(neighbour)] = new_cost
+
+        if currnode == end:
+            shortestdist = p
+            totalenergy = energy[currnode]
+            findpath(parent, shortestdist, totalenergy)
+            return
+
+    print("Invalid path")
+    return
+#***END OF DIJKSTRA'S (BFS) ALGORITHM***
+
 
 #***START OF A-STAR ALGORITHM***
 def astar():
@@ -176,5 +252,12 @@ def astar():
 
 #***END OF A-STAR ALGORITHM***
 
+
+#***RESULTS***
+print("***DIJKSTRA'S (BFS) ALGORITHM***")
+dijkstra()
+print("\n")
+
 print("***A-STAR ALGORITHM***")
 astar()
+
