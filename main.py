@@ -78,7 +78,7 @@ for i in Dist:
 #example: graph.costs["1", "2"] = 2008
 
 
-#***START OF DIJKSTRA'S (BFS) ALGORITHM***
+#***START OF UCS (BFS) ALGORITHM***
 def findpath(parent, shortestdist, totalenergy):
     path = [end]
     while path[-1] != start:
@@ -94,7 +94,7 @@ def findpath(parent, shortestdist, totalenergy):
     print("Total energy cost: ", totalenergy)
     return
 
-def dijkstra():
+def ucs():
     #Initialization
     shortestpath = {n:float('inf') for n in range(num_vertices)} #stores the shortest distance from start to all the other nodes, initialized to infinity
     shortestpath[int(start)] = 0
@@ -148,7 +148,7 @@ def dijkstra():
 
     print("Invalid path")
     return
-#***END OF DIJKSTRA'S (BFS) ALGORITHM***
+#***END OF UCS (BFS) ALGORITHM***
 
 
 #***START OF A-STAR ALGORITHM***
@@ -254,8 +254,8 @@ def astar():
 
 
 #***RESULTS***
-print("***DIJKSTRA'S (BFS) ALGORITHM***")
-dijkstra()
+print("***UCS (BFS) ALGORITHM***")
+ucs()
 print("\n")
 
 print("***A-STAR ALGORITHM***")
